@@ -1872,45 +1872,28 @@ Player.CharacterAdded:Connect(function()
     if Enabled.Unwalk then startUnwalk() end
 end)
 
--- // THE "CHILLI" BYPASS
--- This spoofing loop resets the game's internal "Anti-Fly" timer
-task.spawn(function()
-    while true do
-        task.wait(1.8) -- Frequency of the state reset
-        if _G.InfJump then
-            local char = LocalPlayer.Character
-            local hum = char and char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                -- Bypass: Briefly set state to Landed to reset the kill-timer
-                hum:ChangeState(Enum.HumanoidStateType.Landed)
-                -- Spoofing a raycast check (some anti-cheats look for this)
-                hum.PlatformStand = false
-            end
-        end
-    end
-end)
--- // SMOOTH JUMP EXECUTION - MELOSKA HUB FIX
+-- // INFINITE JUMP SEMPRE ATTIVO (FIX PER MOBILE)
 local UserInputService = game:GetService("UserInputService")
 local canJump = true
-local cooldownTime = 0.15 -- Leggermente più veloce per reattività
-local POWER_LEVEL = 52 
+local cooldownTime = 0.1 -- Molto veloce per saltare a raffica
+local JUMP_POWER = 52
 
 local function ExecuteJump()
     local char = game.Players.LocalPlayer.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     local hum = char and char:FindFirstChildOfClass("Humanoid")
 
-    -- IMPORTANTE: Qui usiamo 'Enabled.InfiniteJump' che è il nome nel tuo script principale
-    if hrp and hum and Enabled.InfiniteJump and canJump then
+    -- Abbiamo rimosso il controllo "Enabled.InfiniteJump" così funziona sempre
+    if hrp and hum and canJump then
         canJump = false
         
-        -- Reset velocità verticale per evitare accumulo di potenza (Bypass fix)
+        -- Reset della velocità per evitare blocchi anti-cheat
         hrp.AssemblyLinearVelocity = Vector3.new(hrp.AssemblyLinearVelocity.X, 0, hrp.AssemblyLinearVelocity.Z)
         
-        -- Applichiamo la spinta
+        -- Applicazione del salto
         hrp.AssemblyLinearVelocity = Vector3.new(
             hrp.AssemblyLinearVelocity.X, 
-            POWER_LEVEL, 
+            JUMP_POWER, 
             hrp.AssemblyLinearVelocity.Z
         )
 
@@ -1919,10 +1902,9 @@ local function ExecuteJump()
     end
 end
 
--- Usiamo solo JumpRequest che è il più efficace per il salto infinito
+-- Rileva quando tocchi il tasto salto su mobile o spazio su PC
 UserInputService.JumpRequest:Connect(function()
     pcall(ExecuteJump)
 end)
 
-print("Infinite Jump Fix Applicato | Meloska Hub")
-
+print("Infinite Jump: SEMPRE ATTIVO caricato!")
