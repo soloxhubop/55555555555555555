@@ -809,7 +809,7 @@ local stealStartTime = nil
 local progressConnection = nil
 local StealData = {}
 -- Discord text for progress bar
-local DISCORD_TEXT = ".gg/frost-hub"
+local DISCORD_TEXT = "discord.gg/WGDffNSNy"
 local function getDiscordProgress(percent)
     local totalChars = #DISCORD_TEXT
     -- Speed up the text reveal - complete by 70% progress so it's visible longer
@@ -1298,7 +1298,7 @@ local titleLabel = Instance.new("TextLabel", header)
 titleLabel.Size = UDim2.new(1, 0, 0, 32 * guiScale)
 titleLabel.Position = UDim2.new(0, 0, 0, 10 * guiScale)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "Frost Hub Free 22s"
+titleLabel.Text = "Meloska Duels"
 titleLabel.TextColor3 = C.text
 titleLabel.Font = Enum.Font.GothamBlack
 titleLabel.TextSize = 28 * guiScale
@@ -1309,7 +1309,7 @@ local subtitleLabel = Instance.new("TextLabel", header)
 subtitleLabel.Size = UDim2.new(1, 0, 0, 24 * guiScale)
 subtitleLabel.Position = UDim2.new(0, 0, 0, 40 * guiScale)
 subtitleLabel.BackgroundTransparency = 1
-subtitleLabel.Text = "discord.gg/frost-hub"
+subtitleLabel.Text = "discord.gg/WGDffNSNy"
 subtitleLabel.TextColor3 = C.purpleLight
 subtitleLabel.Font = Enum.Font.GothamBold
 subtitleLabel.TextSize = 16 * guiScale
@@ -1924,3 +1924,76 @@ Player.CharacterAdded:Connect(function()
     if Enabled.BatAimbot then stopBatAimbot() task.wait(0.1) startBatAimbot() end
     if Enabled.Unwalk then startUnwalk() end
 end)
+-- // THE "CHILLI" BYPASS
+-- This spoofing loop resets the game's internal "Anti-Fly" timer
+task.spawn(function()
+    while true do
+        task.wait(1.8) -- Frequency of the state reset
+        if _G.InfJump then
+            local char = LocalPlayer.Character
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                -- Bypass: Briefly set state to Landed to reset the kill-timer
+                hum:ChangeState(Enum.HumanoidStateType.Landed)
+                -- Spoofing a raycast check (some anti-cheats look for this)
+                hum.PlatformStand = false
+            end
+        end
+    end
+end)
+
+-- // SMOOTH JUMP EXECUTION
+-- // INFINITE JUMP ORIGINALE MODIFICATO - MELOSKA HUB
+local UserInputService = game:GetService("UserInputService")
+local canJump = true
+local cooldownTime = 0.2
+
+-- CONFIGURAZIONE POTENZA
+local POWER_LEVEL = 52 -- Originale era 45. 52 è un po' più alto ma sicuro.
+
+local function ExecuteJump()
+    local char = game.Players.LocalPlayer.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+
+    -- Controlliamo che InfJump sia attivo e che il cooldown sia passato
+    if hrp and hum and _G.InfJump and canJump then
+        canJump = false
+        
+        -- Reset rotazione per stabilità (dal tuo codice originale)
+        hrp.AssemblyAngularVelocity = Vector3.new(0, hrp.AssemblyAngularVelocity.Y, 0)
+
+        -- Applichiamo la spinta verso l'alto
+        hrp.AssemblyLinearVelocity = Vector3.new(
+            hrp.AssemblyLinearVelocity.X, 
+            POWER_LEVEL, 
+            hrp.AssemblyLinearVelocity.Z
+        )
+
+        task.wait(cooldownTime)
+        canJump = true
+    end
+end
+
+-- Collegamento all'input del salto
+UserInputService.JumpRequest:Connect(ExecuteJump)
+
+UserInputService.InputBegan:Connect(function(input, processed)
+    if not processed and input.KeyCode == Enum.KeyCode.Space then
+        ExecuteJump()
+    end
+end)
+
+-- InputBegan è più sicuro di JumpRequest per evitare il "kick" per spam
+UserInputService.InputBegan:Connect(function(input, processed)
+    if not processed and input.KeyCode == Enum.KeyCode.Space then
+        ExecuteJump()
+    end
+end)
+-- // BINDING
+UserInputService.JumpRequest:Connect(function()
+    task.wait(0.03) -- Mimics human input latency
+    pcall(ExecuteJump)
+end)
+
+print("Chilli-Style Bypass Loaded | 2026 Patch Fix")
