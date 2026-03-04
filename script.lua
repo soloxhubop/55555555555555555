@@ -1908,3 +1908,58 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 print("Infinite Jump: SEMPRE ATTIVO caricato!")
+
+-- // FPS & PING DISPLAY - MELOSKA HUB (ULTRA VISIBLE)
+local RunService = game:GetService("RunService")
+local Stats = game:GetService("Stats")
+
+-- Rimozione vecchia UI se esiste
+if game:GetService("CoreGui"):FindFirstChild("MeloskaStats") then
+    game:GetService("CoreGui").MeloskaStats:Destroy()
+end
+
+local statsGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+statsGui.Name = "MeloskaStats"
+
+local container = Instance.new("Frame", statsGui)
+container.Size = UDim2.new(0, 160, 0, 45)
+container.Position = UDim2.new(0, 10, 0, 110) -- Posizionato sotto i controlli
+container.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- NERO PURO
+container.BorderSizePixel = 0
+
+local corner = Instance.new("UICorner", container)
+corner.CornerRadius = UDim.new(0, 6)
+
+local stroke = Instance.new("UIStroke", container)
+stroke.Color = Color3.fromRGB(255, 255, 255) -- BORDO BIANCO
+stroke.Thickness = 2
+
+local statsLabel = Instance.new("TextLabel", container)
+statsLabel.Size = UDim2.new(1, -10, 1, 0)
+statsLabel.Position = UDim2.new(0, 10, 0, 0)
+statsLabel.BackgroundTransparency = 1
+statsLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- BIANCO FORTE
+statsLabel.Font = Enum.Font.GothamBold
+statsLabel.TextSize = 16
+statsLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Variabili FPS
+local lastUpdate = tick()
+local frameCount = 0
+local fps = 0
+
+RunService.RenderStepped:Connect(function()
+    frameCount = frameCount + 1
+    local now = tick()
+    
+    if now - lastUpdate >= 1 then
+        fps = frameCount
+        frameCount = 0
+        lastUpdate = now
+    end
+    
+    local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+    statsLabel.Text = string.format("FPS: %d\nPING: %d ms", fps, ping)
+end)
+
+print("FPS/Ping Display Ultra-Visible Caricato!")
