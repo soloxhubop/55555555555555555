@@ -1909,41 +1909,42 @@ end)
 
 print("Infinite Jump: SEMPRE ATTIVO caricato!")
 
--- // FPS & PING DISPLAY - MELOSKA HUB (ULTRA VISIBLE)
+-- // FPS & PING DISPLAY - POSIZIONE CENTRALE (TOP)
 local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
 
--- Rimozione vecchia UI se esiste
-if game:GetService("CoreGui"):FindFirstChild("MeloskaStats") then
-    game:GetService("CoreGui").MeloskaStats:Destroy()
+-- Rimuove la versione precedente se esiste
+if game:GetService("CoreGui"):FindFirstChild("MeloskaStatsCentral") then
+    game:GetService("CoreGui").MeloskaStatsCentral:Destroy()
 end
 
 local statsGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
-statsGui.Name = "MeloskaStats"
+statsGui.Name = "MeloskaStatsCentral"
 
+-- Contenitore Nero al Centro in Alto
 local container = Instance.new("Frame", statsGui)
-container.Size = UDim2.new(0, 160, 0, 45)
-container.Position = UDim2.new(0, 10, 0, 110) -- Posizionato sotto i controlli
-container.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- NERO PURO
+container.Size = UDim2.new(0, 200, 0, 35)
+container.Position = UDim2.new(0.5, -100, 0, 10) -- Centro orizzontale (0.5), 10 pixel dal bordo alto
+container.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- NERO
+container.BackgroundTransparency = 0.2 -- Leggera trasparenza per stile
 container.BorderSizePixel = 0
 
 local corner = Instance.new("UICorner", container)
-corner.CornerRadius = UDim.new(0, 6)
+corner.CornerRadius = UDim.new(0, 8)
 
 local stroke = Instance.new("UIStroke", container)
-stroke.Color = Color3.fromRGB(255, 255, 255) -- BORDO BIANCO
-stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(255, 255, 255) -- Bordo Bianco forte
+stroke.Thickness = 1.5
 
 local statsLabel = Instance.new("TextLabel", container)
-statsLabel.Size = UDim2.new(1, -10, 1, 0)
-statsLabel.Position = UDim2.new(0, 10, 0, 0)
+statsLabel.Size = UDim2.new(1, 0, 1, 0)
 statsLabel.BackgroundTransparency = 1
-statsLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- BIANCO FORTE
+statsLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- Bianco Forte
 statsLabel.Font = Enum.Font.GothamBold
-statsLabel.TextSize = 16
-statsLabel.TextXAlignment = Enum.TextXAlignment.Left
+statsLabel.TextSize = 14
+statsLabel.Text = "CARICAMENTO..."
 
--- Variabili FPS
+-- Logica FPS e PING
 local lastUpdate = tick()
 local frameCount = 0
 local fps = 0
@@ -1959,7 +1960,8 @@ RunService.RenderStepped:Connect(function()
     end
     
     local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
-    statsLabel.Text = string.format("FPS: %d\nPING: %d ms", fps, ping)
+    statsLabel.Text = string.format("FPS: %d  |  PING: %d ms", fps, ping)
 end)
 
-print("FPS/Ping Display Ultra-Visible Caricato!")
+print("FPS/Ping centrato caricato!")
+
