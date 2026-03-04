@@ -1871,6 +1871,7 @@ Player.CharacterAdded:Connect(function()
     if Enabled.BatAimbot then stopBatAimbot() task.wait(0.1) startBatAimbot() end
     if Enabled.Unwalk then startUnwalk() end
 end)
+
 -- // THE "CHILLI" BYPASS
 -- This spoofing loop resets the game's internal "Anti-Fly" timer
 task.spawn(function()
@@ -1888,29 +1889,25 @@ task.spawn(function()
         end
     end
 end)
-
--- // SMOOTH JUMP EXECUTION
--- // INFINITE JUMP ORIGINALE MODIFICATO - MELOSKA HUB
+-- // SMOOTH JUMP EXECUTION - MELOSKA HUB FIX
 local UserInputService = game:GetService("UserInputService")
 local canJump = true
-local cooldownTime = 0.2
-
--- CONFIGURAZIONE POTENZA
-local POWER_LEVEL = 52 -- Originale era 45. 52 è un po' più alto ma sicuro.
+local cooldownTime = 0.15 -- Leggermente più veloce per reattività
+local POWER_LEVEL = 52 
 
 local function ExecuteJump()
     local char = game.Players.LocalPlayer.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
     local hum = char and char:FindFirstChildOfClass("Humanoid")
 
-    -- Controlliamo che InfJump sia attivo e che il cooldown sia passato
-    if hrp and hum and _G.InfJump and canJump then
+    -- IMPORTANTE: Qui usiamo 'Enabled.InfiniteJump' che è il nome nel tuo script principale
+    if hrp and hum and Enabled.InfiniteJump and canJump then
         canJump = false
         
-        -- Reset rotazione per stabilità (dal tuo codice originale)
-        hrp.AssemblyAngularVelocity = Vector3.new(0, hrp.AssemblyAngularVelocity.Y, 0)
-
-        -- Applichiamo la spinta verso l'alto
+        -- Reset velocità verticale per evitare accumulo di potenza (Bypass fix)
+        hrp.AssemblyLinearVelocity = Vector3.new(hrp.AssemblyLinearVelocity.X, 0, hrp.AssemblyLinearVelocity.Z)
+        
+        -- Applichiamo la spinta
         hrp.AssemblyLinearVelocity = Vector3.new(
             hrp.AssemblyLinearVelocity.X, 
             POWER_LEVEL, 
@@ -1922,25 +1919,10 @@ local function ExecuteJump()
     end
 end
 
--- Collegamento all'input del salto
-UserInputService.JumpRequest:Connect(ExecuteJump)
-
-UserInputService.InputBegan:Connect(function(input, processed)
-    if not processed and input.KeyCode == Enum.KeyCode.Space then
-        ExecuteJump()
-    end
-end)
-
--- InputBegan è più sicuro di JumpRequest per evitare il "kick" per spam
-UserInputService.InputBegan:Connect(function(input, processed)
-    if not processed and input.KeyCode == Enum.KeyCode.Space then
-        ExecuteJump()
-    end
-end)
--- // BINDING
+-- Usiamo solo JumpRequest che è il più efficace per il salto infinito
 UserInputService.JumpRequest:Connect(function()
-    task.wait(0.03) -- Mimics human input latency
     pcall(ExecuteJump)
 end)
 
-print("Chilli-Style Bypass Loaded | 2026 Patch Fix")
+print("Infinite Jump Fix Applicato | Meloska Hub")
+
