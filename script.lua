@@ -1,3 +1,33 @@
+local Lighting = game:GetService("Lighting")
+Lighting.GlobalShadows = false
+Lighting.FogEnd = 100000
+Lighting.Brightness = 0.5
+Lighting.ClockTime = 18
+Lighting.OutdoorAmbient = Color3.fromRGB(80, 80, 90)
+Lighting.Ambient = Color3.fromRGB(70, 70, 80)
+Lighting.ExposureCompensation = 0
+Lighting.ColorShift_Top = Color3.fromRGB(100, 90, 120)
+Lighting.ColorShift_Bottom = Color3.fromRGB(60, 50, 80)
+Lighting.Changed:Connect(function()
+    Lighting.GlobalShadows = false
+        Lighting.FogEnd = 100000
+            Lighting.Brightness = 0.5
+                Lighting.ClockTime = 18
+                    Lighting.OutdoorAmbient = Color3.fromRGB(80, 80, 90)
+                        Lighting.Ambient = Color3.fromRGB(70, 70, 80)
+                            Lighting.ExposureCompensation = 0
+                                Lighting.ColorShift_Top = Color3.fromRGB(100, 90, 120)
+                                    Lighting.ColorShift_Bottom = Color3.fromRGB(60, 50, 80)
+                                    end)
+                                    for _, obj in ipairs(workspace:GetDescendants()) do
+                                        if obj:IsA("BasePart") then
+                                                obj.CastShadow = false
+                                                        obj.Material = Enum.Material.SmoothPlastic
+                                                                obj.Reflectance = 0
+                                                                        obj.Transparency = obj.Transparency * 0.95
+                                                                            end
+end
+
 local fenv = getfenv()
 local Lighting = game:GetService('Lighting')
 local Workspace = game:GetService('Workspace')
